@@ -4,9 +4,9 @@ using Eyemergency.Data;
 using Eyemergency.Areas.Identity.Data;
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<EyemergencyAuthDbContext>(options => options.UseSqlServer(connectionString));
+builder.Services.AddDbContext<EyemergencyDbContext>(options => options.UseSqlServer(connectionString));
 
-builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false).AddEntityFrameworkStores<EyemergencyAuthDbContext>();
+builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false).AddEntityFrameworkStores<EyemergencyDbContext>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

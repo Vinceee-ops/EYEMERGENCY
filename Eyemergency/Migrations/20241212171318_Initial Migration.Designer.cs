@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Eyemergency.Migrations
 {
-    [DbContext(typeof(EyemergencyAuthDbContext))]
+    [DbContext(typeof(EyemergencyDbContext))]
     [Migration("20241212171318_Initial Migration")]
     partial class InitialMigration
     {

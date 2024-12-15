@@ -1,0 +1,53 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<partial name="Header" />
+<partial name="SideNav" />
+<!-- Main page content-->
+<div class="container-xl px-4 mt-5">
+    <div class="row">
+        <div class="col-12 col-md-4 mb-4">
+            <!-- Dashboard info widget -->
+            <a class="card lift border-start-lg border-start-primary h-100 shadow-none rounded-lg" asp-area="" asp-controller="Home" asp-action="Dashboard">
+                <div class="card-body bg-primary text-white">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <div class="small fw-bold mb-1">Vehicles</div>
+                            <div class="ms-2"><i class="fa-solid fa-car"></i></div>
+                        </div>
+                        <div class="h5">@ViewBag.VehicleCount</div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-12 col-md-4 mb-4">
+            <a class="card lift border-start-lg border-start-primary h-100 shadow-none rounded-lg" asp-area="" asp-controller="Home" asp-action="Dashboard">
+                <div class="card-body bg-primary text-white">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <div class="small fw-bold mb-1">Users</div>
+                            <div class="ms-2"><i class="fa-regular fa-user"></i></div>
+                        </div>
+                        <div class="h5">@ViewBag.UserCount</div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-12 col-md-4 mb-4">
+            <a class="card lift border-start-lg border-start-primary h-100 shadow-none rounded-lg">
+                <div class="card-body bg-primary text-white">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <div class="small fw-bold mb-1">Traffic</div>
+                            <div class="ms-2"><i class="fa-solid fa-cloud"></i></div>
+                        </div>
+                        <div class="h5">Moderate</div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
