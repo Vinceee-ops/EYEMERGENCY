@@ -1,0 +1,33 @@
+﻿@model Eyemergency.Models.Vehicle
+
+@{
+    ViewBag.Title = "Register New Vehicle";
+}
+<partial name="Header" />
+<partial name="SideNav" />
+<div class="container p-4">
+<form asp-action="Create" asp-controller="Vehicle" method="post" class="form">
+    @Html.AntiForgeryToken()
+
+    <div class="mb-3">
+        @Html.LabelFor(m => m.TagId, htmlAttributes: new { @class = "form-label" })
+        @Html.TextBoxFor(m => m.TagId, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.TagId, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="mb-3">
+        @Html.LabelFor(m => m.VehicleName, htmlAttributes: new { @class = "form-label" })
+        @Html.TextBoxFor(m => m.VehicleName, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.VehicleName, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="mb-3">
+        @Html.LabelFor(m => m.VehicleType, htmlAttributes: new { @class = "form-label" })
+        @Html.TextBoxFor(m => m.VehicleType, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.VehicleType, "", new { @class = "text-danger" })
+    </div>
+
+    <button type="submit" class="btn btn-success">Register Vehicle</button>
+    <a href="@Url.Action("Index", "Vehicle")" class="btn btn-secondary">Back to List</a>
+</form>
+</div>

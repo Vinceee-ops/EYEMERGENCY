@@ -103,18 +103,14 @@ namespace Eyemergency.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<bool>("IsRegistered")
-                        .HasColumnType("bit");
+                    b.Property<DateTime>("RegisteredAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<string>("Model")
+                    b.Property<string>("TagId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PlateNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("VehicleCode")
+                    b.Property<string>("VehicleName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
