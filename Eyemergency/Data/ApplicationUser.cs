@@ -16,5 +16,7 @@ public class ApplicationUser : IdentityUser
     [PersonalData]
     [Column(TypeName = "Nvarchar(100)")]
     public string LastName { get; set; }
+    public bool IsApproved { get; set; } = false; 
+
 }
 

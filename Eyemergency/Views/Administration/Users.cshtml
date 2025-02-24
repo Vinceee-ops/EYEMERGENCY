@@ -1,0 +1,61 @@
+﻿@model IEnumerable<UserRolesViewModel>
+
+@{
+    ViewBag.Title = "Registered Users";
+}
+
+<div class="container p-4">
+    <h2>Registered Users</h2>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Role</th>
+                <th>Approve User</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model)
+            {
+                <tr>
+                    <td>@user.FirstName @user.LastName</td>
+                    <td>@user.Email</td>
+                    <td>@user.PhoneNumber</td>
+                    <td>
+                        @if (user.Roles.Any())
+                        {
+                            <ul>
+                                @foreach (var role in user.Roles)
+                                {
+                                    <li>@role</li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <span>No roles assigned</span>
+                        }
+                    </td>
+                    <td>
+                        <form asp-controller="Administration" asp-action="ApproveUser" method="post">
+                            <input type="hidden" name="userId" value="@user.UserId" />
+                            <select name="role" class="form-control">
+                                <option value="User">User</option>
+                                <option value="Manager">Manager</option>
+                                <option value="Admin">Admin</option>
+                            </select>
+                            <button type="submit" class="btn btn-primary">Approve</button>
+                        </form>
+                    </td>
+                    <td>
+                        <a href="@Url.Action("Edit", "User", new { id = user.UserId })" class="btn btn-sm btn-warning">Edit</a>
+                        <a href="@Url.Action("Delete", "User", new { id = user.UserId })" class="btn btn-sm btn-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
