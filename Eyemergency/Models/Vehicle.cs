@@ -8,6 +8,10 @@ namespace Eyemergency.Models
         public int Id { get; set; }
 
         [Required]
+        [Display(Name = "User ID")]
+        public string UserId { get; set; }
+
+        [Required]
         [Display(Name = "RFID Tag ID")]
         public string TagId { get; set; }
 

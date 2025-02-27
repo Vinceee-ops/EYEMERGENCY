@@ -10,7 +10,7 @@
     @Html.AntiForgeryToken()
 
     @Html.HiddenFor(m => m.Id)
-
+    @Html.HiddenFor(m => m.UserId)
     <div class="mb-3">
         @Html.LabelFor(m => m.TagId, htmlAttributes: new { @class = "form-label" })
         @Html.TextBoxFor(m => m.TagId, new { @class = "form-control", @readonly = "readonly" }) 

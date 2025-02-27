@@ -1,6 +1,9 @@
-﻿using Eyemergency.Data;
+﻿using Eyemergency.Areas.Identity.Data;
+using Eyemergency.Data;
 using Eyemergency.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+
 
 namespace Eyemergency.Controllers
 {
@@ -8,11 +11,13 @@ namespace Eyemergency.Controllers
     {
         private readonly ILogger<VehicleController> _logger;
         private readonly EyemergencyDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public VehicleController(ILogger<VehicleController> logger, EyemergencyDbContext context)
+        public VehicleController(ILogger<VehicleController> logger, EyemergencyDbContext context, UserManager<ApplicationUser> userManager)
         {
             _logger = logger;
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Vehicle
@@ -23,9 +28,18 @@ namespace Eyemergency.Controllers
         }
 
         // GET: Vehicle/Create
-        public ActionResult Create()
+        public async Task<ActionResult> Create()    
         {
-            return View();
+            // Get the currently logged-in user
+            var user = await _userManager.GetUserAsync(User);
+
+            // Create a new Vehicle model and set the UserId
+            var vehicle = new Vehicle
+            {
+                UserId = user?.Id // Set the UserId to the currently logged-in user's Id
+            };
+
+            return View(vehicle);
         }
 
         // POST: Vehicle/Create
