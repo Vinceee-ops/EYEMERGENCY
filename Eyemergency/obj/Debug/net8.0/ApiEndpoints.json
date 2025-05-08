@@ -1,1 +1,38 @@
-[]
+[
+  {
+    "ContainingType": "Eyemergency.Controllers.Api.EmergencyApiController",
+    "Method": "CheckRfid",
+    "RelativePath": "api/emergency/check/{rfid}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "rfid",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Eyemergency.Controllers.Api.EmergencyApiController",
+    "Method": "GetCurrentEmergency",
+    "RelativePath": "api/emergency/current",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Eyemergency.Controllers.RfidController",
+    "Method": "GetLatestTagId",
+    "RelativePath": "api/Rfid",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  }
+]

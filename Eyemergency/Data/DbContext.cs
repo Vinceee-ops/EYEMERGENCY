@@ -13,4 +13,7 @@ public class EyemergencyDbContext : IdentityDbContext<ApplicationUser>
     {
     }
     public DbSet<Vehicle> Vehicle { get; set; } 
+    public DbSet<EmergencyStatus> EmergencyStatus { get; set; }
+    public DbSet<TrafficLightLog> TrafficLightLogs { get; set; }
+
 }

@@ -7,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Get the connection string from appsettings.json
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddHostedService<SerialPortService>();
 
 // Add DbContext with Identity
 builder.Services.AddDbContext<EyemergencyDbContext>(options =>
@@ -59,7 +60,25 @@ app.UseRouting();
 
 app.UseAuthentication(); // Ensure Authentication is called before Authorization
 app.UseAuthorization();
+// Minimal API endpoint for emergency system
+//app.MapGet("/api/emergency/check/{rfid}", async (string rfid, EyemergencyDbContext db) =>
+//{
+//    var vehicle = await db.Vehicle
+//        .FirstOrDefaultAsync(v => v.TagId == rfid && v.IsActive && v.IsEmergencyVehicle);
 
+//    if (vehicle == null)
+//        return Results.NotFound();
+
+//    return Results.Ok(new
+//    {
+//        vehicle.TagId,
+//        vehicle.ApproachLane,
+//        vehicle.VehicleName
+//    });
+//});
+
+// Add authentication if needed
+// app.MapGet("/api/emergency/check/{rfid}", ...).RequireAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
