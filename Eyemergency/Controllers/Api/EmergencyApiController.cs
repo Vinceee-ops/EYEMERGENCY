@@ -83,5 +83,36 @@ namespace Eyemergency.Controllers.Api
                 Expiration = emergency.ExpirationTime
             });
         }
+
+        [HttpGet("trigger/{tagId}")]
+        public async Task<IActionResult> CheckVehicleEmergency(string tagId)
+        {
+            if (string.IsNullOrEmpty(tagId))
+            {
+                return BadRequest("TagId is required.");
+            }
+
+            var vehicle = await _context.Vehicle
+                .FirstOrDefaultAsync(v => v.TagId == tagId);
+
+            if (vehicle == null)
+            {
+                return NotFound("Vehicle not found.");
+            }
+
+            if (vehicle.IsEmergencyVehicle == true)
+            {
+                vehicle.IsEmergencyVehicle = false;
+            }
+            else
+            {
+                vehicle.IsEmergencyVehicle = true;
+            }
+
+            _context.Vehicle.Update(vehicle);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Emergency status toggled", IsEmergencyVehicle = vehicle.IsEmergencyVehicle });
+        }
     }
 }
