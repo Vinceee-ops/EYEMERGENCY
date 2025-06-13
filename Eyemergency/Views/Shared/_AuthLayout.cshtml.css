@@ -46,3 +46,21 @@ button.accept-policy {
   white-space: nowrap;
   line-height: 60px;
 }
+
+/* Add this to your existing stylesheet */
+.nav-tabs .nav-link {
+    color: #0077cc; /* Matching your existing link color */
+}
+
+    .nav-tabs .nav-link.active {
+        color: #fff;
+        background-color: #1b6ec2;
+        border-color: #1861ac;
+    }
+
+    .nav-tabs .nav-link:hover:not(.active) {
+        color: #0056b3; /* Slightly darker blue for hover, matching Bootstrap's default */
+        background-color: rgba(27, 110, 194, 0.1); /* Light tint of your primary color */
+    }
+
+

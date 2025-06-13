@@ -21,7 +21,7 @@ namespace Eyemergency.Controllers.Api
         }
 
         [HttpGet("check/{rfid}")]
-        public async Task<IActionResult> CheckRfid(string rfid)
+        public async Task<IActionResult> CheckRfid(string rfid, [FromQuery] string lane)
         {
             var vehicle = await _context.Vehicle
                 .FirstOrDefaultAsync(v => v.TagId == rfid && v.IsActive);
@@ -45,7 +45,7 @@ namespace Eyemergency.Controllers.Api
                 IsActive = true,
                 ActivationTime = DateTime.Now,
                 ExpirationTime = DateTime.Now.AddMinutes(2),
-                TriggeredLane = vehicle.ApproachLane
+                TriggeredLane = lane
             };
 
             _context.EmergencyStatus.Add(emergency);
@@ -96,7 +96,7 @@ namespace Eyemergency.Controllers.Api
                 .FirstOrDefaultAsync(v => v.TagId == tagId);
 
             if (vehicle == null)
-            {
+            { 
                 return NotFound("Vehicle not found.");
             }
 

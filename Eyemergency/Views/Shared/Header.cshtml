@@ -20,7 +20,7 @@
                     <div class="collapse navbar-collapse">
                         <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
-                            <a class="nav-link text-dark">Hello @UserManager.GetUserAsync(User).Result.FirstName @UserManager.GetUserAsync(User).Result.LastName!</a>
+                            <a class="nav-link text-dark">@UserManager.GetUserAsync(User).Result.StationName!</a>
                         </li>
                         <li class="nav-item">
                             <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">

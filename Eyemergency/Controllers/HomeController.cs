@@ -2,6 +2,7 @@ using Eyemergency.Areas.Identity.Data;
 using Eyemergency.Data;
 using Eyemergency.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
@@ -13,11 +14,13 @@ namespace Eyemergency.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly EyemergencyDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public HomeController(ILogger<HomeController> logger , EyemergencyDbContext context)
+        public HomeController(ILogger<HomeController> logger , EyemergencyDbContext context, UserManager<ApplicationUser> userManager)
         {
             _logger = logger;
             _context = context;
+            _userManager = userManager;
         }
 
         public IActionResult Index()
@@ -29,9 +32,12 @@ namespace Eyemergency.Controllers
         {
             return View();
         }
-        public IActionResult Dashboard()
+        public async Task<IActionResult> Dashboard()
         {
-            ViewBag.VehicleCount = _context.Vehicle.Count();
+            var user = await _userManager.GetUserAsync(User);
+
+            ViewBag.VehicleCount = _context.Vehicle.Where(v => v.UserId == user.Id).Count();
+            ViewBag.TicketCount = _context.EmergencyTickets.Where(v => v.AssignedToUserId == user.Id && v.Status != "Completed").Count();
             ViewBag.UserCount = _context.Users.Count();
             return View();
         }

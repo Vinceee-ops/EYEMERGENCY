@@ -14,7 +14,7 @@
         </div>
         <div class="d-flex flex-column justify-content-center align-items-center">
             <div class="user">
-                @UserManager.GetUserAsync(User).Result.FirstName @UserManager.GetUserAsync(User).Result.LastName
+                @UserManager.GetUserAsync(User).Result.StationName
             </div>
             <div class="user">
                 @UserManager.GetUserAsync(User).Result.Email
@@ -34,14 +34,22 @@
             </span>
             <span class="title">Dashboard</span>
         </a>
-        <a class="nav-link" asp-area="" asp-controller="Vehicle" asp-action="Index">
-            <span class="icon">
-                <i class="fa-solid fa-car"></i>
-            </span>
-            <span class="title">Vehicles</span>
-        </a>
+        @if (User.IsInRole("Local"))
+        {
+            <a class="nav-link" asp-area="" asp-controller="Vehicle" asp-action="Index">
+                <span class="icon">
+                    <i class="fa-solid fa-car"></i>
+                </span>
+                <span class="title">Vehicles</span>
+            </a>
+            <li class="nav-item">
+                <a class="nav-link" asp-controller="EmergencyTickets" asp-action="StationTickets">
+                    <i class="fas fa-tasks"></i> My Tickets
+                </a>
+            </li>
+        }
 
-        @if (User.IsInRole("Admin"))
+        @if (User.IsInRole("Admin") || User.IsInRole("Regional"))
         {
             <a class="nav-link" href="#" data-bs-toggle="collapse" data-bs-target="#submenu" aria-expanded="false" aria-controls="submenu">
                 <span class="icon">
@@ -56,13 +64,13 @@
                     </span>
                     <span class="title">Users</span>
                 </a>
-                <a class="nav-link" href="#">
-                    <span class="icon">
-                        <i class="fa-solid fa-gears"></i>
-                    </span>
-                    <span class="title">Roles</span>
-                </a>
             </div>
+            <a class="nav-link" asp-area="" asp-controller="EmergencyTickets" asp-action="Index">
+                <span class="icon">
+                    <i class="fa-solid fa-ticket"></i>
+                </span>
+                <span class="title">Ticket</span>
+            </a>
         }
         <a class="nav-link" id="register" asp-area="Identity" asp-page="/Account/Manage/Index">
             <span class="icon">

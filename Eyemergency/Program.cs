@@ -91,7 +91,7 @@ async Task SeedRoles(IServiceProvider serviceProvider)
 {
     var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-    string[] roleNames = { "Admin", "User", "Manager" };
+    string[] roleNames = { "Admin", "Regional", "Local" };
 
     foreach (var roleName in roleNames)
     {

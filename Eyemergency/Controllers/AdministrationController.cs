@@ -35,8 +35,8 @@ namespace Eyemergency.Controllers
                 userRolesViewModel.Add(new UserRolesViewModel
                 {
                     UserId = user.Id,
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
+                    StationName = user.StationName,
+                    Stationtype = user.StationType,
                     Email = user.Email,
                     PhoneNumber = user.PhoneNumber,
                     Roles = roles.ToList()

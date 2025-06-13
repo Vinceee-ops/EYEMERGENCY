@@ -6,12 +6,14 @@
         <div class="col-5 mt-5">
             <div class="card login-logout-card">
                 <div class="card-header">
-                    <ul class="nav nav-tabs card-header-tabs">
+                    <ul class="nav nav-tabs card-header-tabs m-1">
                         <li class="nav-item">
-                            <a class="nav-link" href="/Identity/Account/Login">Login</a>
+                            <a class="nav-link @(Context.Request.Path.StartsWithSegments("/Identity/Account/Login") ? "active" : "")"
+                               href="/Identity/Account/Login">Login</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/Identity/Account/Register">Register</a>
+                            <a class="nav-link @(Context.Request.Path.StartsWithSegments("/Identity/Account/Register") ? "active" : "")"
+                               href="/Identity/Account/Register">Register</a>
                         </li>
                     </ul>
                 </div>
@@ -26,6 +28,21 @@
         </div>
     </div>
 </div>
+
+<script>
+        document.querySelectorAll('.nav-tabs .nav-link').forEach(link => {
+        link.addEventListener('click', function() {
+            // Remove active class from all tabs
+            document.querySelectorAll('.nav-tabs .nav-link').forEach(el => {
+                el.classList.remove('active');
+            });
+            // Add active class to clicked tab
+            this.classList.add('active');
+        });
+    });
+</script>
+
+
 
 @section Scripts{
     @await RenderSectionAsync("Scripts", required: false)

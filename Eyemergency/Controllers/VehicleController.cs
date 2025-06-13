@@ -21,9 +21,18 @@ namespace Eyemergency.Controllers
         }
 
         // GET: Vehicle
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
-            var vehicles = _context.Vehicle.ToList();
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return Unauthorized(); // or redirect to login page
+            }
+
+            // Assuming there's a UserId property in your Vehicle model
+            var vehicles = _context.Vehicle.Where(v => v.UserId == user.Id).ToList();
+
             return View(vehicles);
         }
 

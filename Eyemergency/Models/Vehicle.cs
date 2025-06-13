@@ -37,5 +37,7 @@ namespace Eyemergency.Models
 
         [Display(Name = "Active")]
         public bool IsActive { get; set; } = true;
+        public virtual ICollection<EmergencyTicket> AssignedTickets { get; set; }
+
     }
 }

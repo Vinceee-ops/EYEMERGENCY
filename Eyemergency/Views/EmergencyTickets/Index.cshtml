@@ -1,0 +1,66 @@
+﻿@model IEnumerable<Eyemergency.Models.EmergencyTicket>
+
+@{
+    ViewBag.Title = "Emergency Tickets";
+}
+<div class="container p-4">
+<h2>Emergency Tickets</h2>
+
+<div class="row mb-3">
+    <div class="col-md-12">
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Create New Emergency Ticket
+        </a>
+    </div>
+</div>
+
+    <table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Ticket ID</th>
+            <th>Created</th>
+            <th>Caller</th>
+            <th>Type</th>
+            <th>Location</th>
+            <th>Priority</th>
+            <th>Status</th>
+            <th>Assigned To</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.TicketId</td>
+                <td>@item.CreatedAt.ToString("g")</td>
+                <td>@item.CallerName</td>
+                <td>@item.EmergencyType</td>
+                <td>@item.Location</td>
+                <td>
+                    @switch (item.Priority)
+                    {
+                        case 1:
+                            <span class="label label-danger">High</span>
+                            ; break;
+                        case 2:
+                            <span class="label label-warning">Medium</span>
+                            ; break;
+                        case 3:
+                            <span class="label label-info">Low</span>
+                            ; break;
+                    }
+                </td>
+                <td>@item.Status</td>
+                <td>@(item.AssignedToUser?.StationName ?? "Not assigned")</td>
+                <td>
+                    @if (User.IsInRole("Regional") || User.IsInRole("Admin"))
+                    {
+                        <a asp-action="Assign" asp-route-id="@item.TicketId" class="btn btn-xs btn-primary">Assign</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+</div>

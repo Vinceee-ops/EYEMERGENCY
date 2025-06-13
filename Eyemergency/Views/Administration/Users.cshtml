@@ -9,10 +9,9 @@
     <table class="table table-bordered">
         <thead>
             <tr>
-                <th>Name</th>
+                <th>Station Name</th>
+                <th>Station Type</th>
                 <th>Email</th>
-                <th>Phone</th>
-                <th>Role</th>
                 <th>Approve User</th>
                 <th>Actions</th>
             </tr>
@@ -21,9 +20,9 @@
             @foreach (var user in Model)
             {
                 <tr>
-                    <td>@user.FirstName @user.LastName</td>
+                    <td>@user.StationName</td>
+                    <td>@user.Stationtype</td>
                     <td>@user.Email</td>
-                    <td>@user.PhoneNumber</td>
                     <td>
                         @if (user.Roles.Any())
                         {
@@ -43,16 +42,18 @@
                         <form asp-controller="Administration" asp-action="ApproveUser" method="post">
                             <input type="hidden" name="userId" value="@user.UserId" />
                             <select name="role" class="form-control">
-                                <option value="User">User</option>
-                                <option value="Manager">Manager</option>
-                                <option value="Admin">Admin</option>
+                                @if (User.IsInRole("Regional"))
+                                {
+                                    <option value="Local">Local</option>
+                                }
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <option value="Regional">Regional</option>
+                                    <option value="Admin">Admin</option>
+                                }
                             </select>
                             <button type="submit" class="btn btn-primary">Approve</button>
                         </form>
-                    </td>
-                    <td>
-                        <a href="@Url.Action("Edit", "User", new { id = user.UserId })" class="btn btn-sm btn-warning">Edit</a>
-                        <a href="@Url.Action("Delete", "User", new { id = user.UserId })" class="btn btn-sm btn-danger">Delete</a>
                     </td>
                 </tr>
             }

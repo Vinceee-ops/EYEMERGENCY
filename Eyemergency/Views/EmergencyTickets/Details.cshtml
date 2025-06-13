@@ -1,0 +1,72 @@
+﻿@model EmergencyTicket
+
+<div class="container p-4">
+    <h2>Ticket Details</h2>
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">@Model.EmergencyType</h5>
+            <p class="card-text">@Model.Description</p>
+
+            <div class="mb-3">
+                <strong>Status:</strong>
+                <span class="badge @GetStatusBadgeClass(Model.TicketStatuses)">
+                    @Model.Status.ToString()
+                </span>
+            </div>
+
+            @if (Model.AssignedToVehicle != null)
+            {
+                <div class="mb-3">
+                    <strong>Assigned Vehicle:</strong>
+                    @Model.AssignedToVehicle.VehicleName
+                </div>
+            }
+
+            <form asp-action="AssignVehicle" method="post">
+                <input type="hidden" name="id" value="@Model.TicketId" />
+                <div class="form-group">
+                    <label>Assign Vehicle:</label>
+                    <select name="vehicleId" class="form-control" @(Model.Status == "Completed" || Model.AssignedToVehicle != null ? "disabled" : "")>
+                        <option value="">-- Select Vehicle --</option>
+                        @foreach (var vehicle in ViewBag.AvailableVehicles)
+                        {
+                            <option value="@vehicle.Id" selected="@(Model.AssignedToVehicleId == vehicle.Id)">
+                                @vehicle.VehicleName (@vehicle.VehicleType)
+                            </option>
+                        }
+                    </select>
+                </div>
+                @if (Model.Status != "Completed")
+                {
+                    <button type="submit" class="btn btn-primary mt-5">Assign Vehicle</button>
+                }
+             </form>
+    </div>
+</div>
+</div>
+
+@functions {
+    string GetStatusBadgeClass(EmergencyTicket.TicketStatus status)
+    {
+        return status switch
+        {
+            EmergencyTicket.TicketStatus.Pending => "bg-warning",
+            EmergencyTicket.TicketStatus.InProgress => "bg-info",
+            EmergencyTicket.TicketStatus.Completed => "bg-success",
+            _ => "bg-secondary"
+        };
+    }
+}

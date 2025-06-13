@@ -51,18 +51,23 @@ namespace Eyemergency.Areas.Identity.Pages.Account
         {
             [Required]
             [DataType(DataType.Text)]
-            [Display(Name = "First Name")]
-            public string FirstName { get; set; }
+            [Display(Name = "Station Name")]
+            public string StationName { get; set; }
 
             [Required]
             [DataType(DataType.Text)]
-            [Display(Name = "Last Name")]
-            public string LastName { get; set; }
+            [Display(Name = "Station Type")]
+            public string StationType { get; set; }
 
             [Required]
             [EmailAddress]
             [Display(Name = "Email")]
             public string Email { get; set; }
+
+            [Required]
+            [DataType(DataType.Text)]
+            [Display(Name = "Station Location")]
+            public string StationLocation { get; set; }
 
             [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
@@ -105,8 +110,9 @@ namespace Eyemergency.Areas.Identity.Pages.Account
                 }
 
                 // Set user properties
-                user.FirstName = Input.FirstName ?? string.Empty; // Handle null
-                user.LastName = Input.LastName ?? string.Empty;   // Handle null
+                user.StationName = Input.StationName ?? string.Empty; // Handle null
+                user.StationType = Input.StationType ?? string.Empty;   // Handle null
+                user.StationLocation = Input.StationLocation ?? string.Empty;   // Handle null
                 user.IsApproved = false;
 
                 // Set username and email

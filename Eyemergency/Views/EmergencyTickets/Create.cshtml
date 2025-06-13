@@ -1,0 +1,110 @@
+﻿@model Eyemergency.Models.EmergencyTicket
+
+@{
+    ViewData["Title"] = "Create Emergency Ticket";
+}
+
+<div class="container p-4">
+    <h2>Create Emergency Ticket</h2>
+    <hr />
+
+    <form asp-action="Create" method="post" class="form">
+        @Html.AntiForgeryToken()
+
+        <!-- Existing fields remain the same -->
+        <div class="mb-3">
+            <label asp-for="CallerName" class="form-label"></label>
+            <input asp-for="CallerName" class="form-control" />
+            <span asp-validation-for="CallerName" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="CallerPhone" class="form-label"></label>
+            <input asp-for="CallerPhone" class="form-control" />
+            <span asp-validation-for="CallerPhone" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="EmergencyType" class="form-label"></label>
+            <select asp-for="EmergencyType" class="form-control">
+                <option value="">-- Select Emergency Type --</option>
+                <option value="Medical">Medical</option>
+                <option value="Fire">Fire</option>
+                <option value="Police">Police</option>
+                <option value="Traffic">Traffic</option>
+                <option value="Other">Other</option>
+            </select>
+            <span asp-validation-for="EmergencyType" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Location" class="form-label"></label>
+            <input asp-for="Location" class="form-control" />
+            <span asp-validation-for="Location" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Description" class="form-label"></label>
+            <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Priority" class="form-label"></label>
+            <select asp-for="Priority" class="form-control">
+                <option value="1">High (Immediate danger to life/property)</option>
+                <option value="2" selected>Medium (Urgent but not life-threatening)</option>
+                <option value="3">Low (Minor incident)</option>
+            </select>
+            <span asp-validation-for="Priority" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-plus-circle"></i> Create Ticket
+            </button>
+            <a href="@Url.Action("Index", "EmergencyTickets")" class="btn btn-secondary">
+                <i class="fas fa-list"></i> Back to List
+            </a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $(document).ready(function() {
+            // Auto-format phone number
+            $('#CallerPhone').inputmask('(999) 999-9999');
+
+            // Station search functionality
+            $('#searchStationBtn').click(searchStations);
+            $('#stationSearch').keyup(function(e) {
+                if (e.keyCode === 13) searchStations();
+            });
+
+            function searchStations() {
+                const searchTerm = $('#stationSearch').val().toLowerCase();
+                $('#stationSelect option').each(function() {
+                    const stationName = $(this).data('name')?.toLowerCase() || '';
+                    const stationType = $(this).data('type')?.toLowerCase() || '';
+                    const stationText = $(this).text().toLowerCase();
+
+                    if (stationName.includes(searchTerm) ||
+                        stationType.includes(searchTerm) ||
+                        stationText.includes(searchTerm)) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+
+                // Reset selection if the selected option is hidden
+                if ($('#stationSelect option:selected').is(':hidden')) {
+                    $('#stationSelect').val('');
+                }
+            }
+        });
+    </script>
+}
