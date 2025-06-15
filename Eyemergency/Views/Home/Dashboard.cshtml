@@ -4,7 +4,7 @@
 <!-- Main page content-->
 <div class="container-xl px-4 mt-5">
     <div class="row">
-        @if (User.IsInRole("Local"))
+        @if (User.IsInRole("Local") || User.IsInRole("Regional"))
         {
             <div class="col-12 col-md-4 mb-4">
                 <!-- Dashboard info widget -->

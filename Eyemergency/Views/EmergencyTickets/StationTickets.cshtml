@@ -2,68 +2,257 @@
 
 @{
     ViewData["Title"] = "My Assigned Tickets";
+
+    // Get query parameters for pagination
+    var activePage = Context.Request.Query["activePage"].FirstOrDefault() != null ?
+                     int.Parse(Context.Request.Query["activePage"]) : 1;
+    var completedPage = Context.Request.Query["completedPage"].FirstOrDefault() != null ?
+                        int.Parse(Context.Request.Query["completedPage"]) : 1;
+    var pageSize = 10;
+
+    var activeTickets = Model.Where(t => t.Status?.ToLower() != "completed" && t.Status?.ToLower() != "closed")
+                            .OrderByDescending(t => t.CreatedAt);
+    var completedTickets = Model.Where(t => t.Status?.ToLower() == "completed" || t.Status?.ToLower() == "closed")
+                               .OrderByDescending(t => t.CompletedAt);
+
+    var activeTicketsPaginated = activeTickets.Skip((activePage - 1) * pageSize).Take(pageSize);
+    var completedTicketsPaginated = completedTickets.Skip((completedPage - 1) * pageSize).Take(pageSize);
+
+    var totalActivePages = (int)Math.Ceiling(activeTickets.Count() / (double)pageSize);
+    var totalCompletedPages = (int)Math.Ceiling(completedTickets.Count() / (double)pageSize);
 }
 
 <div class="container p-4">
     <h2>My Assigned Tickets</h2>
-
-    <div class="table-responsive">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Emergency Type</th>
-                    <th>Location</th>
-                    <th>Priority</th>
-                    <th>Status</th>
-                    <th>Assigned Vehicle</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var ticket in Model)
-                {
-                    <tr>
-                        <td>@ticket.EmergencyType</td>
-                        <td>@ticket.Location</td>
-                        <td>
-                            <span class="badge @(ticket.Priority == 1 ? "bg-danger" : ticket.Priority == 2 ? "bg-warning" : "bg-success")">
-                                @(ticket.Priority == 1 ? "High" : ticket.Priority == 2 ? "Medium" : "Low")
-                            </span>
-                        </td>
-                        <td>
-                            <span class="badge @(ticket.Status == "Completed" ? "bg-success" : "bg-warning")">
-                                @ticket.Status
-                            </span>
-                        </td>
-                        <td>
-                            @ticket.AssignedToVehicle?.VehicleName
-                        </td>
-                        <td>
-                            <div class="d-flex gap-2">
-                                <a asp-action="Details" asp-route-id="@ticket.TicketId" class="btn btn-sm btn-info">Details</a>
-
-                                @* Only show status update form if vehicle is assigned AND ticket isn't completed *@
-                                @if (ticket.AssignedToVehicleId != null && ticket.Status != "Completed")
-                                {
-                                    <form asp-action="UpdateStatus" method="post" class="d-inline">
-                                        <input type="hidden" name="id" value="@ticket.TicketId" />
-                                        <input type="hidden" name="vehicleId" value="@ticket.AssignedToVehicle?.Id" />
-
-                                        <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
-                                            @foreach (var status in Enum.GetValues(typeof(EmergencyTicket.TicketStatus)))
-                                            {
-                                                <option value="@status" selected="@(ticket.Status == status)">
-                                                    @status
-                                                </option>
-                                            }
-                                        </select>
-                                    </form>
-                                }
-                            </div>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <a asp-action="Create" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Create New Emergency Ticket
+            </a>
+        </div>
     </div>
+    <!-- Active Tickets Table -->
+    <h3>Active Tickets</h3>
+    @if (activeTickets.Any())
+    {
+        <div class="table-responsive mb-4">
+            <table class="table table-bordered table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Emergency Type</th>
+                        <th>Location</th>
+                        <th>Priority</th>
+                        <th>Status</th>
+                        <th>Assigned Vehicle</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var ticket in activeTicketsPaginated)
+                    {
+                        <tr>
+                            <td>@ticket.EmergencyType</td>
+                            <td>@ticket.Location</td>
+                            <td>
+                                @switch (ticket.Priority)
+                                {
+                                    case 1:
+                                        <span class="badge bg-danger">High</span>
+                                        break;
+                                    case 2:
+                                        <span class="badge bg-warning">Medium</span>
+                                        break;
+                                    case 3:
+                                        <span class="badge bg-success">Low</span>
+                                        break;
+                                }
+                            </td>
+                            <td>
+                                @switch (ticket.Status?.ToLower())
+                                {
+                                    case "":
+                                        <span class="badge bg-primary">New</span>
+                                        break;
+                                    case "assigned":
+                                        <span class="badge bg-info">Assigned</span>
+                                        break;
+                                    case "owned":
+                                        <span class="badge bg-info">Owned</span>
+                                        break;
+                                    case "pending":
+                                        <span class="badge bg-warning">Pending</span>
+                                        break;
+                                    default:
+                                        <span class="badge bg-light text-dark">@ticket.Status</span>
+                                        break;
+                                }
+                            </td>
+                            <td>@ticket.AssignedToVehicle?.VehicleName</td>
+                            <td>
+                                <div class="d-flex gap-2">
+                                    <a asp-action="Details" asp-route-id="@ticket.TicketId" class="btn btn-sm btn-info">Details</a>
+
+                                    @if (ticket.AssignedToVehicleId != null && ticket.Status != "Completed")
+                                    {
+                                        <form asp-action="UpdateStatus" method="post" class="d-inline">
+                                            <input type="hidden" name="id" value="@ticket.TicketId" />
+                                            <input type="hidden" name="vehicleId" value="@ticket.AssignedToVehicle?.Id" />
+
+                                            <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
+                                                @foreach (var status in Enum.GetValues(typeof(EmergencyTicket.TicketStatus)))
+                                                {
+                                                    <option value="@status" selected="@(ticket.Status == status.ToString())">
+                                                        @status
+                                                    </option>
+                                                }
+                                            </select>
+                                        </form>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        @if (totalActivePages > 1)
+        {
+            <nav aria-label="Active tickets pagination">
+                <ul class="pagination justify-content-center">
+                    @if (activePage > 1)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="?activePage=@(activePage - 1)&completedPage=@completedPage" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    }
+
+                    @for (int i = 1; i <= totalActivePages; i++)
+                    {
+                        <li class="page-item @(i == activePage ? "active" : "")">
+                            <a class="page-link" href="?activePage=@i&completedPage=@completedPage">@i</a>
+                        </li>
+                    }
+
+                    @if (activePage < totalActivePages)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="?activePage=@(activePage + 1)&completedPage=@completedPage" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        }
+    }
+    else
+    {
+        <div class="alert alert-info mb-5">
+            No active tickets available.
+        </div>
+    }
+
+    <!-- Completed Tickets Table -->
+    <h3>Completed Tickets</h3>
+    @if (completedTickets.Any())
+    {
+        <div class="table-responsive mb-4">
+            <table class="table table-bordered table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Emergency Type</th>
+                        <th>Location</th>
+                        <th>Priority</th>
+                        <th>Status</th>
+                        <th>Assigned Vehicle</th>
+                        <th>Completed At</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var ticket in completedTicketsPaginated)
+                    {
+                        <tr>
+                            <td>@ticket.EmergencyType</td>
+                            <td>@ticket.Location</td>
+                            <td>
+                                @switch (ticket.Priority)
+                                {
+                                    case 1:
+                                        <span class="badge bg-danger">High</span>
+                                        break;
+                                    case 2:
+                                        <span class="badge bg-warning">Medium</span>
+                                        break;
+                                    case 3:
+                                        <span class="badge bg-success">Low</span>
+                                        break;
+                                }
+                            </td>
+                            <td>
+                                @switch (ticket.Status?.ToLower())
+                                {
+                                    case "completed":
+                                        <span class="badge bg-success">Completed</span>
+                                        break;
+                                    case "closed":
+                                        <span class="badge bg-secondary">Closed</span>
+                                        break;
+                                    default:
+                                        <span class="badge bg-light text-dark">@ticket.Status</span>
+                                        break;
+                                }
+                            </td>
+                            <td>@ticket.AssignedToVehicle?.VehicleName</td>
+                            <td>@(ticket.CompletedAt.ToString("g") ?? "N/A")</td>
+                            <td>
+                                <a asp-action="Details" asp-route-id="@ticket.TicketId" class="btn btn-sm btn-info">Details</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        @if (totalCompletedPages > 1)
+        {
+            <nav aria-label="Completed tickets pagination">
+                <ul class="pagination justify-content-center">
+                    @if (completedPage > 1)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="?activePage=@activePage&completedPage=@(completedPage - 1)" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    }
+
+                    @for (int i = 1; i <= totalCompletedPages; i++)
+                    {
+                        <li class="page-item @(i == completedPage ? "active" : "")">
+                            <a class="page-link" href="?activePage=@activePage&completedPage=@i">@i</a>
+                        </li>
+                    }
+
+                    @if (completedPage < totalCompletedPages)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="?activePage=@activePage&completedPage=@(completedPage + 1)" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        }
+    }
+    else
+    {
+        <div class="alert alert-info">
+            No completed tickets available.
+        </div>
+    }
 </div>

@@ -95,7 +95,7 @@ namespace Eyemergency.Controllers
             {
                 return NotFound();
             }
-
+            ticket.CompletedAt = DateTime.Now;
             ticket.Status = status.ToString();
             vehicle.IsEmergencyVehicle = false;
             await _context.SaveChangesAsync();
@@ -131,15 +131,25 @@ namespace Eyemergency.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(EmergencyTicket emergencyTicket)
         {
-            // Set automatic fields
-            emergencyTicket.CreatedAt = DateTime.Now;
-            emergencyTicket.Status = "Pending";
 
+            emergencyTicket.CreatedAt = DateTime.Now;
+
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser != null && await _userManager.IsInRoleAsync(currentUser, "Regional"))
+            {
+                emergencyTicket.Status = "Pending";
+            }
+            else
+            {
+                emergencyTicket.Status = "Owned";
+                emergencyTicket.AssignedToUserId = currentUser.Id;
+            }
             _context.Add(emergencyTicket);
             await _context.SaveChangesAsync();
 
             TempData["SuccessMessage"] = "Emergency ticket created successfully!";
             return RedirectToAction(nameof(Index));
+
         }
 
 

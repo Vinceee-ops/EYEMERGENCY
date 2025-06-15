@@ -35,9 +35,15 @@ namespace Eyemergency.Controllers
         public async Task<IActionResult> Dashboard()
         {
             var user = await _userManager.GetUserAsync(User);
-
-            ViewBag.VehicleCount = _context.Vehicle.Where(v => v.UserId == user.Id).Count();
+            if (user != null && await _userManager.IsInRoleAsync(user, "Regional"))
+            {
+            ViewBag.TicketCount = _context.EmergencyTickets.Where(v => v.Status != "Completed").Count();
+            }
+            else
+            {
             ViewBag.TicketCount = _context.EmergencyTickets.Where(v => v.AssignedToUserId == user.Id && v.Status != "Completed").Count();
+            }
+            ViewBag.VehicleCount = _context.Vehicle.Where(v => v.UserId == user.Id).Count();
             ViewBag.UserCount = _context.Users.Count();
             return View();
         }

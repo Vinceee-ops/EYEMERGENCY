@@ -46,6 +46,9 @@ namespace Eyemergency.Models
         [Display(Name = "Created At")]
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
+        [Display(Name = "Completed At")]
+        public DateTime CompletedAt { get; set; } = DateTime.Now;
+
         [Display(Name = "Assigned To")]
         public string? AssignedToUserId { get; set; }  // Changed to string for Identity UserId
 

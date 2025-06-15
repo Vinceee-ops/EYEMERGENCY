@@ -56,8 +56,7 @@ namespace Eyemergency.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(Vehicle vehicle)
         {
-            if (ModelState.IsValid)
-            {
+
                 // Check if TagId already exists
                 if (_context.Vehicle.Any(v => v.TagId == vehicle.TagId))
                 {
@@ -69,9 +68,6 @@ namespace Eyemergency.Controllers
                 _context.SaveChanges();
                 return RedirectToAction("Index");
             }
-
-            return View(vehicle);
-        }
 
         // GET: Vehicle/Edit/{id}
         public ActionResult Edit(int id)

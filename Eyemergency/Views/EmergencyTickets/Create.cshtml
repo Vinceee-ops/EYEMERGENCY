@@ -1,4 +1,9 @@
 ﻿@model Eyemergency.Models.EmergencyTicket
+@using Microsoft.AspNetCore.Identity
+@using Eyemergency.Areas.Identity.Data
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
 
 @{
     ViewData["Title"] = "Create Emergency Ticket";
@@ -61,7 +66,13 @@
             <button type="submit" class="btn btn-primary">
                 <i class="fas fa-plus-circle"></i> Create Ticket
             </button>
+        @if (User.IsInRole("Regional"))
+        {
             <a href="@Url.Action("Index", "EmergencyTickets")" class="btn btn-secondary">
+                <i class="fas fa-list"></i> Back to List
+            </a>
+        }
+            <a href="@Url.Action("StationTickets", "EmergencyTickets")" class="btn btn-secondary">
                 <i class="fas fa-list"></i> Back to List
             </a>
         </div>

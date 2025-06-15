@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Eyemergency.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using Eyemergency.Areas.Identity.Data;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +9,7 @@ using System.Security.Claims;
 
 namespace Eyemergency.Controllers
 {
-    [Authorize (Roles = "Admin")]
+    [Authorize(Roles = "Regional, Admin")]
     public class AdministrationController : Controller
     {
         private readonly ILogger<AdministrationController> _logger;
